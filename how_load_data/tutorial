@@ -1,0 +1,34 @@
+1) Conocimiento previo:
+
+Al tener la versión community solo deja utilizar 1 base de datos, que es la por
+default llamada neo4j, además para cargar data solo deja al usuario "neo4j"
+para ello en una terminal de ubuntu escribimos lo siguente:
+
+sudo su neo4j
+
+Ahí estaremos como usuario "neo4j". Para cargar data es totalmente necesario que la base de datos por default no tenga datos para asegurarnos de eso vamos a la siguente ruta:
+
+/var/lib/neo4j/data
+
+Y eliminamos la carpeta neo4j de las carpetas "databases" y "transactions"
+
+rm -rf databases/neo4j
+rm -rf transactions/neo4j
+
+Además el servicio de neo4j debe estar pausado para ello escribimos:
+
+sudo systemctl stop neo4j
+
+Y ahora podemos hacer la carga de datos.
+
+
+
+¿Cómo cargar nodos y relaciones?
+
+
+neo4j-admin import --nodes=ruta/example.csv --relationships=/ruta/example.csv
+
+
+Para mayor información del codigo consultar el -help o diractamente desde la pagina oficial
+
+https://neo4j.com/docs/operations-manual/current/tutorial/neo4j-admin-import/#_skip_nodes_with_same_id
