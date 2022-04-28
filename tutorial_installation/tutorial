@@ -1,0 +1,42 @@
+Instalación de NEO4J 4.1 (versión estable)  para Ubuntu 20.04
+
+
+1) Actualizar repositorios 
+
+sudo apt-get update
+
+Los repositorios de Ubuntu no contiene el paquete para instalar Neo4j, por ello
+que se necesita agregar el repositorio de la fuente oficial.
+
+2) Requisitos previos para instalar el paquete neo4j
+
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+
+3) Clave GPG
+
+curl -fsSL https://debian.neo4j.com/neotechnology.gpg.key | sudo apt-key add -
+
+4) Agregar repositorio Neo4J 4.1
+
+sudo add-apt-repository "deb https://debian.neo4j.com stable 4.1"
+
+5) Instalar
+
+sudo apt-get install neo4j
+
+6) Activar el servicio
+
+sudo systemctl enable neo4j.service
+
+Si se instaló correctamente debe estar el servicio activo, abrir la terminal y escribir:
+
+cypher-shell
+
+Las credenciales por default son: 
+
+username: neo4j
+password: neo4j
+
+Para cerrar cypher-shell, escribir:
+
+:exit
