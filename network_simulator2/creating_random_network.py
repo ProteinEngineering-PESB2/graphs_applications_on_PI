@@ -25,13 +25,13 @@ for i in range(edges):
     node2 = random.choice(list_nodes)
     value = random.uniform(0, 10)
 
-    edge_value = [node1, value, node2, 'ENLACE' ]
+    edge_value = [node1, value, node2, 'ENLACE']
     list_edges.append(edge_value)
 
 
 print("Export to csv")
 df_export = pd.DataFrame(list_edges, columns=[':START_ID', 'val',':END_ID', ':TYPE'])
-df_export.to_csv("data/relaciones_n"+sys.argv[1]+".csv", index=False)
+df_export.to_csv("data/"+name_export+"_relaciones_n"+sys.argv[1]+".csv", index=False)
 
 df_export_nodos = pd.DataFrame(csv_nodes, columns=['nodo:ID',':LABEL'])
 df_export_nodos.to_csv("data/"+name_export+"_n"+sys.argv[1]+".csv", index=False)
