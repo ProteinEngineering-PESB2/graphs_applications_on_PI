@@ -9,7 +9,7 @@ import random
 from tqdm import tqdm
 
 # Choosing the Seed
-random.seed(1996)
+random.seed(100)
 
 # Download pdb files from url (Funcion adquirida desde script whati_services_all.py)
 def dowload_pdb_code(pdb_code, input_folder=""):
@@ -47,15 +47,17 @@ if  __name__ == "__main__":
 
     # Parameters
     main_folder = "PROTEINS"
-    sample_size = 3
+    sample_size = 1500
 
     create_folder(main_folder)
 
     # Create dict to save samples
     sample = dict()
+    errors = dict()
 
     for category in pdb_list.keys():
         cat_name = category
+        errors_list = []
 
         if category == "Alpha and beta proteins (a/b)":
             cat_name = "Alpha and beta proteins (a_b)"
@@ -65,13 +67,25 @@ if  __name__ == "__main__":
         folder = main_folder + "/" + cat_name
         
         # Select subset
-        sub_set = random.sample(pdb_list[category], sample_size)
+        if len(pdb_list[category]) < sample_size:
+            sub_set = random.sample(pdb_list[category], len(pdb_list[category]))
+        else:
+            sub_set = random.sample(pdb_list[category], sample_size)
+        
         sample[category] = sub_set
 
         # Download the pdb in the appropriate folder
         for pdb in tqdm(sub_set):
-           dowload_pdb_code(pdb, folder)
+           response = dowload_pdb_code(pdb, folder)
+           if response == -1:
+               errors_list.append(pdb)
 
-# Save file
-with open(main_folder + '/Sample.json', 'w') as fp:
-    json.dump(sample, fp)
+        errors[category] = errors_list
+
+
+    # Save files
+    with open(main_folder + '/Sample.json', 'w') as fp:
+        json.dump(sample, fp)
+
+    with open(main_folder + '/Errors.json', 'w') as fp:
+        json.dump(errors, fp)
