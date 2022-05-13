@@ -15,7 +15,7 @@ for i in range(len(users_df)):
     for j in range(len(movies_data)):
         user = users_df["user_id"].iloc[i]
         movie = movies_df["movie_id"].iloc[j]
-        score = np.random.random()
+        score = np.random.randint(3,size=1)[0]
         new_row = {"user_id": user, "movie_id": movie, "score": score}
         relations_df = relations_df.append(new_row, ignore_index=True)
 
