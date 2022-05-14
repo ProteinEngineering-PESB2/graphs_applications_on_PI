@@ -54,12 +54,20 @@ class GAT(torch.nn.Module):
         x = self.conv2(x, edge_index) + self.lin2(x)
         return x
 
+class GNN(torch.nn.Module):
+    def __init__(self, hidden_channels, out_channels):
+        super().__init__()
+        self.conv1 = SAGEConv((-1, -1), hidden_channels)
+        self.conv2 = SAGEConv((-1, -1), out_channels)
 
-model = GAT(hidden_channels=64, out_channels=3)
+    def forward(self, x, edge_index):
+        x = self.conv1(x, edge_index).relu()
+        x = self.conv2(x, edge_index)
+        return x
+
+model = GNN(hidden_channels=64, out_channels=3)
 model = to_hetero(model, data.metadata(), aggr='sum')
 optimizer = torch.optim.Adam(model.parameters())
-
-print(data)
 
 def train():
     model.train()
@@ -74,3 +82,4 @@ def train():
     return float(loss)
 
 result = train()
+print(result)
