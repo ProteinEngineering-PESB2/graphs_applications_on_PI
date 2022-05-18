@@ -17,8 +17,20 @@ def create_folder(name):
 
 def pdb_to_distance_graph(pdb_name, granularity, dist, lower, upper, input_folder, check_protein):
 
+    pdb = input_folder + '/' + pdb_name[0:-4]
+
+    # Decompress pdb file
+    try:
+        with ZipFile(pdb + '.zip') as file:
+            file.extractall(input_folder)
+    
+    # If is already decompressed not do anything
+    except:
+        pass
+
+    pdb = pdb + '.pdb'
+
     # Read the pdb file
-    pdb = input_folder + '/' + pdb_name
     coords, name = process_pdb_as_df(pdb, granularity, check_protein)
 
     # Create node list
@@ -47,5 +59,21 @@ def pdb_to_distance_graph(pdb_name, granularity, dist, lower, upper, input_folde
 
     print('Creando grafo de distancias')
     node_list_name = input_folder + "/Node_lists/" + "node_list_" + name + ".csv"
-    graph_name = 'distance_euclidean_' + name
+    graph_name = 'distance_' + dist + '_' + name
     generate_graph(distance_filtered, node_list_name, path, graph_name)
+
+    # Compress files
+    with ZipFile(node_list_name[0:-4] + '.zip', 'w') as file:
+        file.write(node_list_name, "node_list_" + name + ".csv")
+
+    with ZipFile(distance_list[0:-4] + '.zip', 'w') as file:
+        file.write(distance_list, "distance_list_" + name + ".csv")
+
+    with ZipFile(distance_filtered[0:-4] + '.zip', 'w') as file:
+        file.write(distance_filtered, dist + "_distance_list_filtered_" + name + ".csv")
+
+    # Remove decompressed files
+    os.remove(pdb)
+    os.remove(node_list_name)
+    os.remove(distance_list)
+    os.remove(distance_filtered)

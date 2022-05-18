@@ -1,0 +1,6 @@
+{"Folder": "../PROTEINS",
+"Granularity": "atoms",
+"Distance": "euclidean", 
+"Lower": 2, 
+"Upper": 15, 
+"Only_proteins": true}

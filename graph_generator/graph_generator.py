@@ -3,9 +3,8 @@ import pandas as pd
 import json
 import networkx as nx
 import numpy as np
-import sys, getopt
-import textwrap
-import os.path
+import os
+from zipfile import ZipFile
 
 
 def generate_graph(adjaceny_file, nodes_file, path, name):
@@ -47,6 +46,13 @@ def generate_graph(adjaceny_file, nodes_file, path, name):
     file_name = path + '/graph_' + name
 
     nx.write_gpickle(graph, file_name + '.gpickle')
+
+    # Compress file
+    with ZipFile(file_name + '.zip', 'w') as file:
+        file.write(file_name + '.gpickle', 'graph_' + name + '.gpickle')
+    
+    # Delete decompress file
+    os.remove(file_name + '.gpickle')
 
     # Create json that save statistics
     Info = {'File_name': file_name,
