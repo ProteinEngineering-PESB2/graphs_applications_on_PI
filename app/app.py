@@ -1,7 +1,13 @@
 import logging
 import numpy as np
+import pandas as pd
+import sys
+import os
+import errno
 from neo4j import GraphDatabase
 from neo4j.exceptions import ServiceUnavailable
+from multiprocessing import Pool
+from return_querys import group_of_querys
 
         
 class App():
@@ -22,13 +28,8 @@ class App():
 
         graphlets = []
         for i in result:
-            graphlet = i['n1']['nodo']+i['m']['nodo']+i['n2']['nodo']
-
-            #QUITAR X
-            graphlet = graphlet.replace("X", "")
-
+            graphlet = i['n1']['id']+"_"+i['m']['id']+"_"+i['n2']['id']
             graphlets.append(graphlet)
-        
         return(graphlets)
             
     @staticmethod
@@ -45,30 +46,29 @@ class App():
             raise
 
 
+def export_csv(data, type_graphlet, name_export):
+
+
+    try:
+        os.mkdir("data_output/"+name_export)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+    df_export = pd.DataFrame(data, columns=[type_graphlet])
+    df_export.to_csv("data_output/"+name_export+"/"+type_graphlet+".csv", index=False)
+
 if __name__ == "__main__":
 
+    name_export = sys.argv[1]
     app = App()
 
+    #export_csv(g1,'g1',name_export)
+    querys = []
 
-    query = """
-        MATCH (n1:PROTEIN)<-[r1:ENLACE]-(m:PROTEIN)-[r2:ENLACE]->(n2:PROTEIN)
-        RETURN n1,m,n2,r1,r2 LIMIT 10
-    """
-    protein1_graphlet1 = app.buscador(query)
+    for i in range(1,14):
+        querys.append(group_of_querys.querys(i))
 
-    print(protein1_graphlet1)
+    for query in querys:
+        app.buscador(query)
 
-    query = """
-        MATCH (n1:PROTEIN2)<-[r1:ENLACE2]-(m:PROTEIN2)-[r2:ENLACE2]->(n2:PROTEIN2)
-        RETURN n1,m,n2,r1,r2 LIMIT 10
-    """
-
-    protein2_graphlet1 = app.buscador(query)
-
-    print(protein2_graphlet1)
-
-    #result = np.equal(protein1_graphlet1, protein2_graphlet1, dtype=object)
-
-    #print(result)
-
-    app.close()
