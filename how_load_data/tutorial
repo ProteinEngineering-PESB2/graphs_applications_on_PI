@@ -1,5 +1,9 @@
 1) Conocimiento previo:
 
+Es necesario tener la version Java 17 (solo esta version acepta). Para cambiar version:
+
+sudo update-alternatives --config java
+
 Al tener la versión community solo deja utilizar 1 base de datos, que es la por
 default llamada neo4j, además para cargar data solo deja al usuario "neo4j"
 para ello en una terminal de ubuntu escribimos lo siguente:
@@ -19,14 +23,22 @@ Además el servicio de neo4j debe estar pausado para ello escribimos:
 
 sudo systemctl stop neo4j
 
+Y copiamos la data a la siguente ruta
+
+/var/lib/neo4j/import 
+
 Y ahora podemos hacer la carga de datos.
 
 
 
 ¿Cómo cargar nodos y relaciones?
 
-
+old commnad:
 neo4j-admin import --nodes=ruta/example.csv --relationships=/ruta/example.csv
+
+new command:
+neo4j-admin database import full --nodes=nodes.csv --relationships=edges.csv
+
 
 
 Para mayor información del codigo consultar el -help o diractamente desde la pagina oficial
